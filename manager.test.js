@@ -1,4 +1,4 @@
-const Manager = require('.../lib/Manager');
+const Manager = require('.../lib/manager');
 const manager = new Manager('jacob', '123456', 'jacob@jacob.com', '123');
 
 test('testing to see if we are able to get the constructor values for the "manager" object', () => {
@@ -18,6 +18,10 @@ test('testing to see if we can get the id back from the getName() method', () =>
 
 test('testing to see if we can get back the email back from the getEmail() method', () => {
     expect(manager.getEmail()).tobe('jacob@jacob.com');
+});
+
+test('testing to see if we can get back the email back from the getOfficeNumber() method', () => {
+    expect(manager.getOfficeNumber()).tobe('123');
 });
 
 test('testing to see if we can get back the role from getRole() meathod', () => {
