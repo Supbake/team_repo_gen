@@ -1,7 +1,13 @@
-const inquirer = require('inquirer');
-const Manager = require('./lib/manager');
-const Engineer = require('./lib/engineer');
-const Intern = require('./lib/intern');
+const inquirer = require('inquirer'); //inquirer
+const Manager = require('./lib/manager'); // class manager
+const Engineer = require('./lib/engineer'); // class engineer
+const Intern = require('./lib/intern'); // class intern
+const site = require('./site');
+const path = require('path');
+const fs = require('fs');
+const OUTPUT_DIR = path.resolve(__dirname, 'output'); // output 
+const outputPath = path.join(OUTPUT_DIR, 'team.html'); // site
+const teamMembers = []; // team
 
 const promptManager = () => {
     return inquirer.prompt([
@@ -20,7 +26,7 @@ const promptManager = () => {
         },
         {
             type: 'input',
-            name: 'employeeID',
+            name: 'employeeId',
             message: 'Enter your ID number.',
             validate: employeeId => {
                 if(employeeId) {
@@ -58,9 +64,9 @@ const promptManager = () => {
             }
         },
     ]).then(answers => {
-        console.log(answers);
+        // console.log(answers);
         const manager = new Manager(answers.name, answers.employeeId, answers.email, answers.officeNumber);
-        teamMember.push(manager);
+        teamMembers.push(manager);
         promptMenu();
     })
 };
@@ -73,13 +79,14 @@ const promptMenu = () => {
             message: 'Please select which role you would like to add.',
             choices: ['Engineer', 'Intern', 'Finished building team']
         }
-    ])
+    ]) 
     .then (userChoice => {
+        console.log(userChoice);
         switch (userChoice.menu) {
-            case "Add and engineer":
+            case "Engineer":
                 promptEngineer();
                 break;
-            case 'Add an intern':
+            case 'Intern':
                 promptIntern();
                 break;
             default:
@@ -106,7 +113,7 @@ const promptEngineer = () => {
         },
         {
             type: 'input',
-            name: 'employeeID',
+            name: 'employeeId',
             message: 'Enter your ID number.',
             validate: employeeId => {
                 if(employeeId) {
@@ -143,10 +150,10 @@ const promptEngineer = () => {
                 }
             }
         },
-    ]),then(answers => {
+    ]).then(answers => {
         console.log(answers);
         const engineer = new Engineer(answers.name, answers.employeeId, answers.email, answers.githubUsername);
-        teamMember.push(engineer);
+        teamMembers.push(engineer);
         promptMenu();
     }) 
 };
@@ -169,7 +176,7 @@ const promptIntern = () => {
         },
         {
             type: 'input',
-            name: 'employeeID',
+            name: 'employeeId',
             message: 'Enter your ID number.',
             validate: employeeId => {
                 if(employeeId) {
@@ -209,17 +216,17 @@ const promptIntern = () => {
     ]).then(answers => {
         console.log(answers);
         const intern = new Intern(answers.name, answers.email, answers.employeeId, answers.school);
-        teamMember.push(intern);
+        teamMembers.push(intern);
         promptMenu();
     })
 };
 
-const builtTeam = () => {
-    console.log('Team Built!');
-    if (!fs.existsSync(OUTPUT_DIR)) {
-        fs.mkdirSync(OUTPUT_DIR)
+const buildTeam = () => {
+    console.log('buildTeam',teamMembers);
+    if (!fs.existsSync(OUTPUT_DIR)) { //check if files exist
+        fs.mkdirSync(OUTPUT_DIR) // if not make a new file
     }
-    fs.writeFileSync(outputPath, generateSite(teamMembers), 'utf-8');
+    fs.writeFileSync(outputPath, site(teamMembers), "utf-8"); // makes the outpath 
 }
 
 promptManager();
